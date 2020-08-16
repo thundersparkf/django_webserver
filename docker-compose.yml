@@ -1,0 +1,11 @@
+version: '3.0'
+
+services:
+  webapp:
+    build: .
+    command: daphne mysite.asgi:application
+    volumes:
+        - .:/code
+    ports:
+        - "8000:8000"
+    
