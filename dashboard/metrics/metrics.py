@@ -3,6 +3,7 @@ import ast
 import datetime
 import pandas as pd
 import pytz
+import psycopg2
 import json
 import mysql.connector
 alt.renderers.enable('json')
@@ -18,10 +19,10 @@ class Database():
     def engine(self):
         connection = None
         try:
-            connection = mysql.connector.connect(host='localhost',
+            connection = psycopg2.connect(host='35.193.198.218',
                                                  database='rasa',
-                                                 user='root',
-                                                 password='Agastya2001#')
+                                                 user='postgres',
+                                                 password='wulroot')
             
         except Error as error:
             print("Failed to connect: {}".format(error))
@@ -41,7 +42,7 @@ class Metrics():
         self.eng = Database()
 
     def returned_users_data(self):
-        SQL = "SELECT timestamp,(COUNT(sender_id)-1) FROM rasa.events WHERE type_name = 'session_started' GROUP BY timestamp;"
+        SQL = "SELECT timestamp,(COUNT(sender_id)-1) FROM public.events WHERE type_name = 'session_started' GROUP BY timestamp;"
         results = self.eng.query(SQL)
         dates=[[result[1],datetime.datetime.fromtimestamp(result[0],tz=pytz.timezone('UTC')).strftime('%Y-%m-%dT%H:%M:%S')] for result in results]
         df = pd.DataFrame(dates, columns = ['Count','dates'])
@@ -69,7 +70,7 @@ class Metrics():
         return returned_users
 
     def users_and_queries_data(self):
-        SQL = "SELECT sender_id, timestamp FROM rasa.events WHERE type_name = 'user';"
+        SQL = "SELECT sender_id, timestamp FROM public.events WHERE type_name = 'user';"
         results = self.eng.query(SQL)
         times=[[result[0],datetime.datetime.fromtimestamp(result[1],tz=pytz.timezone('UTC')).strftime('%Y-%m-%dT%H:%M:%S')] for result in results]
         df = pd.DataFrame(times, columns=['sender','Time'])
@@ -107,7 +108,7 @@ class Metrics():
         return heatmap
 
     def unique_users_data(self):
-        SQL = "SELECT DISTINCT sender_id, MIN(timestamp) FROM rasa.events WHERE type_name = 'session_started' GROUP BY sender_id;"
+        SQL = "SELECT DISTINCT sender_id, MIN(timestamp) FROM public.events WHERE type_name = 'session_started' GROUP BY sender_id;"
         results = self.eng.query(SQL)
         times=[[result[0],datetime.datetime.fromtimestamp(result[1],tz=pytz.timezone('UTC')).strftime('%Y-%m-%dT%H:%M:%S')] for result in results]
         unique = pd.DataFrame(times, columns=['sender','time'])
