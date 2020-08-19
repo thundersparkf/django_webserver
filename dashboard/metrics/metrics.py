@@ -44,7 +44,7 @@ class Metrics():
     def returned_users_data(self):
         SQL = "SELECT timestamp,(COUNT(sender_id)-1) FROM public.events WHERE type_name = 'session_started' GROUP BY timestamp;"
         results = self.eng.query(SQL)
-        dates=[[result[1],datetime.datetime.fromtimestamp(result[0],tz=pytz.timezone('UTC')).strftime('%Y-%m-%dT%H:%M:%S')] for result in results]
+        dates=[[result[1],datetime.datetime.fromtimestamp(result[0],tz=pytz.timezone('Asia/Kolkata')).strftime('%Y-%m-%dT%H:%M:%S')] for result in results]
         df = pd.DataFrame(dates, columns = ['Count','dates'])
         return df
     def returned_users_chart(self):
@@ -72,7 +72,7 @@ class Metrics():
     def users_and_queries_data(self):
         SQL = "SELECT sender_id, timestamp FROM public.events WHERE type_name = 'user';"
         results = self.eng.query(SQL)
-        times=[[result[0],datetime.datetime.fromtimestamp(result[1],tz=pytz.timezone('UTC')).strftime('%Y-%m-%dT%H:%M:%S')] for result in results]
+        times=[[result[0],datetime.datetime.fromtimestamp(result[1],tz=pytz.timezone('Asia/Kolkata')).strftime('%Y-%m-%dT%H:%M:%S')] for result in results]
         df = pd.DataFrame(times, columns=['sender','Time'])
         df['Queries'] = 1
         return df
