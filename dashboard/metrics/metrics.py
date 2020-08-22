@@ -19,7 +19,7 @@ class Database():
     def engine(self):
         connection = None
         try:
-            connection = psycopg2.connect(host='35.193.198.218',
+            connection = psycopg2.connect(host='34.121.1.190',
                                                  database='rasa',
                                                  user='postgres',
                                                  password='wulroot')
