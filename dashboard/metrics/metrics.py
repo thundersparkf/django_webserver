@@ -9,20 +9,21 @@ import mysql.connector
 alt.renderers.enable('json')
 class Database():
     def __init__(self):
-        
-        
-        self.host='localhost'
-        self.database='rasa'
-        self.user='root'
-        self.password='Agastya2001#'
+        db = ConfigParser()
+        db.read("/app/actions/config_data.ini")
+        db_creds = db['database']
+        self.host = db_creds['host']
+        self.database = db_creds['database']
+        self.user = db_creds['user']
+        self.password = db_creds['password']
         
     def engine(self):
         connection = None
         try:
-            connection = psycopg2.connect(host='34.121.1.190',
-                                                 database='rasa',
-                                                 user='postgres',
-                                                 password='wulroot')
+            connection = psycopg2.connect(host=self.host,
+                                                 database=self.database,
+                                                 user=self.user,
+                                                 password=self.password)
             
         except Error as error:
             print("Failed to connect: {}".format(error))
